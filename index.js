@@ -110,6 +110,13 @@ async function run() {
         app.get('/menu', async (req, res) => {
             const result = await menuCollection.find().toArray()
             res.send(result)
+
+        })
+        // add item to menu
+        app.post('/menu', verifyJWT, verifyAdmin, async (req, res) => {
+            const newItem = req.body;
+            const result = await menuCollection.insertOne(newItem);
+            res.send(result)
         })
         app.get('/review', async (req, res) => {
             const result = await reviewsCollection.find().toArray()
