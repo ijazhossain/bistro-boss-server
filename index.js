@@ -11,7 +11,7 @@ app.use(express.json())
 // verify JWT
 const verifyJWT = (req, res, next) => {
     const authorization = req.headers.authorization;
-    console.log(authorization);
+    // console.log(authorization);
     if (!authorization) {
         return res.status(401).send({ error: true, message: 'unauthorized access' })
     }
@@ -106,7 +106,7 @@ async function run() {
 
 
 
-        // menu & reviews related APIs
+        // ==========menu & reviews related APIs
         app.get('/menu', async (req, res) => {
             const result = await menuCollection.find().toArray()
             res.send(result)
@@ -118,11 +118,18 @@ async function run() {
             const result = await menuCollection.insertOne(newItem);
             res.send(result)
         })
+        // delete items from menu
+        app.delete('/menu/:id', verifyJWT, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await menuCollection.deleteOne(query);
+            res.send(result);
+        })
         app.get('/review', async (req, res) => {
             const result = await reviewsCollection.find().toArray()
             res.send(result)
         })
-        // API for cart 
+        //========= API for cart 
         app.delete('/carts/:id', async (req, res) => {
             const id = req.params.id;
             // console.log(id);
